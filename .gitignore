@@ -1,0 +1,5 @@
+.vs/
+*.nupkg
+[Dd]ebug/
+[Bb]in/
+[Oo]bj/
