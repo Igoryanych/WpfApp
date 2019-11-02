@@ -4,9 +4,45 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp"
-        mc:Ignorable="d"
+        xmlns:vm="clr-namespace:WpfApp"
+		mc:Ignorable="d"
         Title="MainWindow" Height="400" Width="500">
-    <Grid>
-        
-    </Grid>
+	<Window.DataContext>
+		<vm:ViewModel />
+	</Window.DataContext>
+
+	<Window.Resources>
+		<Style TargetType="TextBox" x:Key="TextBoxStyle">
+			<Setter Property="VerticalAlignment" Value="Top" />
+			<Setter Property="Margin" Value="10" />
+			<Setter Property="Height" Value="20" />
+		</Style>
+	</Window.Resources>
+	
+	<Border Padding="5">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="9*"></RowDefinition>
+				<RowDefinition Height="*"></RowDefinition>
+			</Grid.RowDefinitions>
+
+			<Grid Grid.Row="0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto"></RowDefinition>
+					<RowDefinition></RowDefinition>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition></ColumnDefinition>
+					<ColumnDefinition></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Choose directories to compare their content" HorizontalAlignment="Center"></TextBlock>
+				
+				<TextBox Grid.Row="1" Grid.Column="0" x:Name="selectedPath1" Style="{StaticResource TextBoxStyle}"></TextBox>
+				<TextBox Grid.Row="1" Grid.Column="1" x:Name="selectedPath2" Style="{StaticResource TextBoxStyle}"></TextBox>
+			</Grid>
+			
+			<Button Grid.Row="1" Content="Compare" MaxWidth="120" MaxHeight="25"></Button>
+		</Grid>
+	</Border>
 </Window>
