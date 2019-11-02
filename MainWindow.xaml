@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp"
         xmlns:vm="clr-namespace:WpfApp"
 		mc:Ignorable="d"
         Title="MainWindow" Height="400" Width="500">
@@ -12,10 +11,19 @@
 	</Window.DataContext>
 
 	<Window.Resources>
+		<Image x:Key="icon" Source="/pics/icon.png" x:Shared="false"/>
 		<Style TargetType="TextBox" x:Key="TextBoxStyle">
 			<Setter Property="VerticalAlignment" Value="Top" />
-			<Setter Property="Margin" Value="10" />
+			<Setter Property="Margin" Value="5" />
 			<Setter Property="Height" Value="20" />
+		</Style>
+
+		<Style TargetType="Button" x:Key="ButtonStyle">
+			<Setter Property="Content" Value="{StaticResource icon}" />
+			<Setter Property="Height" Value="20" />
+			<Setter Property="Width" Value="40" />
+			<Setter Property="Command" Value="{Binding OpenDialogCommand}" />
+			<Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=Name}" />
 		</Style>
 	</Window.Resources>
 	
@@ -28,8 +36,9 @@
 
 			<Grid Grid.Row="0">
 				<Grid.RowDefinitions>
-					<RowDefinition Height="auto"></RowDefinition>
-					<RowDefinition></RowDefinition>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition></ColumnDefinition>
@@ -39,7 +48,10 @@
 				<TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Choose directories to compare their content" HorizontalAlignment="Center"></TextBlock>
 				
 				<TextBox Grid.Row="1" Grid.Column="0" x:Name="selectedPath1" Style="{StaticResource TextBoxStyle}"></TextBox>
+				<Button  Grid.Row="2" Grid.Column="0" x:Name="Path1" Style="{StaticResource ButtonStyle}"></Button>
+				
 				<TextBox Grid.Row="1" Grid.Column="1" x:Name="selectedPath2" Style="{StaticResource TextBoxStyle}"></TextBox>
+				<Button  Grid.Row="2" Grid.Column="1" x:Name="Path2" Style="{StaticResource ButtonStyle}"></Button>
 			</Grid>
 			
 			<Button Grid.Row="1" Content="Compare" MaxWidth="120" MaxHeight="25"></Button>
