@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace WpfApp
 {
@@ -45,7 +46,13 @@ namespace WpfApp
 
 		public void OpenDialog()
 		{
-
+			var dlg = new FolderBrowserDialog();
+			DialogResult result = dlg.ShowDialog();
+			
+			if (result == DialogResult.OK)
+			{
+				SelectedPath = dlg.SelectedPath;
+			}
 		}
 	}
 }
