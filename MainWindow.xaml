@@ -71,7 +71,7 @@
 				<ListView Grid.Row="3" Grid.Column="1" x:Name="FileList2" ItemsSource="{Binding SecondDirectory}" Style="{StaticResource ListViewStyle}" />
 			</Grid>
 			
-			<Button Grid.Row="1" Content="Compare" MaxWidth="120" MaxHeight="25"></Button>
+			<Button Grid.Row="1" Content="Compare" MaxWidth="120" MaxHeight="25" Command="{Binding CompareFoldersCommand}"></Button>
 		</Grid>
 	</Border>
 </Window>

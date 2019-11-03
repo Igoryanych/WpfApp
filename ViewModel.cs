@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace WpfApp
 {
@@ -11,11 +12,13 @@ namespace WpfApp
 	{
 		private string selectedPath1, selectedPath2;
 		private ICommand openDialogCommand;
+		private RelayCommand compareFoldersCommand;
 
 		public ObservableCollection<FileModel> _firstDirectory, _secondDirectory;
 
 		public ViewModel()
 		{
+			compareFoldersCommand = new RelayCommand(FillViewList, PathsCorrect);
 			_firstDirectory = new ObservableCollection<FileModel>();
 			_secondDirectory = new ObservableCollection<FileModel>();
 		}
@@ -33,6 +36,7 @@ namespace WpfApp
 				if (selectedPath1 == value) return;
 				selectedPath1 = value;
 				OnPropertyChanged(nameof(selectedPath1));
+				compareFoldersCommand.OnExecuteChanged();
 			}
 		}
 
@@ -47,6 +51,7 @@ namespace WpfApp
 				if (selectedPath2 == value) return;
 				selectedPath2 = value;
 				OnPropertyChanged(nameof(selectedPath2));
+				compareFoldersCommand.OnExecuteChanged();
 			}
 		}
 
@@ -72,10 +77,21 @@ namespace WpfApp
 			{
 				if (openDialogCommand == null)
 				{
-					openDialogCommand = new RelayCommand(param => OpenDialog(param.ToString()));
+					openDialogCommand = new RelayParametrizedCommand(
+						param => OpenDialog(param.ToString()),
+						() => { return true; }
+						);
 				}
 
 				return openDialogCommand;
+			}
+		}
+
+		public RelayCommand CompareFoldersCommand
+		{
+			get
+			{
+				return compareFoldersCommand;
 			}
 		}
 
@@ -91,26 +107,40 @@ namespace WpfApp
 			
 			if (result == DialogResult.OK)
 			{
-				string[] filePaths = Directory.GetFiles(dlg.SelectedPath);
-
 				if (path == "Path1")
 				{
 					SelectedPath1 = dlg.SelectedPath;
-
-					PopulateCollection(_firstDirectory, filePaths);
 				}
 				else
 				{
 					SelectedPath2 = dlg.SelectedPath;
-
-					PopulateCollection(_secondDirectory, filePaths);
 				}
 			}
 		}
 
-		public void PopulateCollection(ObservableCollection<FileModel> directory, string[] files)
+		private bool PathsCorrect()
 		{
-			if (directory != null)
+			if (!string.IsNullOrEmpty(selectedPath1) && !string.IsNullOrEmpty(selectedPath2))
+			{
+				if (Directory.Exists(selectedPath1) && Directory.Exists(selectedPath2))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private void FillViewList()
+		{
+			PopulateCollection(_firstDirectory, Directory.GetFiles(SelectedPath1));
+
+			PopulateCollection(_secondDirectory, Directory.GetFiles(SelectedPath2));
+		}
+
+		private void PopulateCollection(ObservableCollection<FileModel> directory, string[] files)
+		{
+			if (directory.Any())
 			{
 				directory.Clear();
 			}
