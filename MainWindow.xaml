@@ -62,12 +62,12 @@
 
 				<TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Choose directories to compare their content" HorizontalAlignment="Center"></TextBlock>
 				
-				<TextBox  Grid.Row="1" Grid.Column="0" x:Name="SelectedPath1" Style="{StaticResource TextBoxStyle}"></TextBox>
+				<TextBox  Grid.Row="1" Grid.Column="0" x:Name="SelectedPath1" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedPath1}"></TextBox>
 				<Button   Grid.Row="2" Grid.Column="0" x:Name="Path1" Style="{StaticResource ButtonStyle}"></Button>
 				<ListView Grid.Row="3" Grid.Column="0" x:Name="FileList1" ItemsSource="{Binding FirstDirectory}" Style="{StaticResource ListViewStyle}" />
 				
-				<TextBox Grid.Row="1" Grid.Column="1" x:Name="SelectedPath2" Style="{StaticResource TextBoxStyle}"></TextBox>
-				<Button  Grid.Row="2" Grid.Column="1" x:Name="Path2" Style="{StaticResource ButtonStyle}"></Button>
+				<TextBox  Grid.Row="1" Grid.Column="1" x:Name="SelectedPath2" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedPath2}" ></TextBox>
+				<Button   Grid.Row="2" Grid.Column="1" x:Name="Path2" Style="{StaticResource ButtonStyle}"></Button>
 				<ListView Grid.Row="3" Grid.Column="1" x:Name="FileList2" ItemsSource="{Binding SecondDirectory}" Style="{StaticResource ListViewStyle}" />
 			</Grid>
 			
