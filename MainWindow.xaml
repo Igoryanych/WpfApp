@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WpfApp"
 		mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="500">
+        Title="MainWindow" Height="400" Width="700">
 	<Window.DataContext>
 		<vm:ViewModel />
 	</Window.DataContext>
@@ -25,20 +25,35 @@
 			<Setter Property="Command" Value="{Binding OpenDialogCommand}" />
 			<Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=Name}" />
 		</Style>
+		
+		<Style TargetType="ListView" x:Key="ListViewStyle" x:Shared="false">
+			<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
+			<Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+			<Setter Property="View">
+				<Setter.Value>
+					<GridView>
+						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
+						<GridViewColumn Header="Size, KB"  DisplayMemberBinding="{Binding Path=Size}" />
+						<GridViewColumn Header="Last modified" DisplayMemberBinding="{Binding Path=LastModified}" />
+					</GridView>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</Window.Resources>
 	
 	<Border Padding="5">
-		<Grid>
+		<Grid x:Name="MainGrid">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="9*"></RowDefinition>
 				<RowDefinition Height="*"></RowDefinition>
 			</Grid.RowDefinitions>
 
-			<Grid Grid.Row="0">
+			<Grid x:Name="InnerGrid" Grid.Row="0">
 				<Grid.RowDefinitions>
-					<RowDefinition Height="auto"/>
-					<RowDefinition Height="auto"/>
-					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="auto" />
+					<RowDefinition x:Name="ContentRow" Height="*" />
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition></ColumnDefinition>
@@ -47,11 +62,13 @@
 
 				<TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Choose directories to compare their content" HorizontalAlignment="Center"></TextBlock>
 				
-				<TextBox Grid.Row="1" Grid.Column="0" x:Name="selectedPath1" Style="{StaticResource TextBoxStyle}"></TextBox>
-				<Button  Grid.Row="2" Grid.Column="0" x:Name="Path1" Style="{StaticResource ButtonStyle}"></Button>
+				<TextBox  Grid.Row="1" Grid.Column="0" x:Name="SelectedPath1" Style="{StaticResource TextBoxStyle}"></TextBox>
+				<Button   Grid.Row="2" Grid.Column="0" x:Name="Path1" Style="{StaticResource ButtonStyle}"></Button>
+				<ListView Grid.Row="3" Grid.Column="0" x:Name="FileList1" ItemsSource="{Binding FirstDirectory}" Style="{StaticResource ListViewStyle}" />
 				
-				<TextBox Grid.Row="1" Grid.Column="1" x:Name="selectedPath2" Style="{StaticResource TextBoxStyle}"></TextBox>
+				<TextBox Grid.Row="1" Grid.Column="1" x:Name="SelectedPath2" Style="{StaticResource TextBoxStyle}"></TextBox>
 				<Button  Grid.Row="2" Grid.Column="1" x:Name="Path2" Style="{StaticResource ButtonStyle}"></Button>
+				<ListView Grid.Row="3" Grid.Column="1" x:Name="FileList2" ItemsSource="{Binding SecondDirectory}" Style="{StaticResource ListViewStyle}" />
 			</Grid>
 			
 			<Button Grid.Row="1" Content="Compare" MaxWidth="120" MaxHeight="25"></Button>

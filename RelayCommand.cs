@@ -5,9 +5,9 @@ namespace WpfApp
 {
 	class RelayCommand : ICommand
 	{
-		private Action _action;
+		private Action<object> _action;
 
-		public RelayCommand(Action passedAction)
+		public RelayCommand(Action<object> passedAction)
 		{
 			_action = passedAction;
 		}
@@ -21,7 +21,7 @@ namespace WpfApp
 
 		public void Execute(object parameter)
 		{
-			_action();
+			_action(parameter);
 		}
 	}
 }
