@@ -4,23 +4,26 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WpfApp
 {
 	class ViewModel : INotifyPropertyChanged
 	{
-		private string selectedPath1, selectedPath2;
+		private string selectedPath1, selectedPath2, errorMessage;
 		private ICommand openDialogCommand;
 		private RelayCommand compareFoldersCommand;
+		private bool launched;
 
 		public ObservableCollection<FileModel> _firstDirectory, _secondDirectory;
 
 		public ViewModel()
 		{
-			compareFoldersCommand = new RelayCommand(FillViewList, PathsCorrect);
 			_firstDirectory = new ObservableCollection<FileModel>();
 			_secondDirectory = new ObservableCollection<FileModel>();
+			compareFoldersCommand = new RelayCommand(FillViewList, PathsCorrect);
+			launched = true;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -52,6 +55,20 @@ namespace WpfApp
 				selectedPath2 = value;
 				OnPropertyChanged(nameof(selectedPath2));
 				compareFoldersCommand.OnExecuteChanged();
+			}
+		}
+
+		public string ErrorMessage
+		{
+			get
+			{
+				return errorMessage;
+			}
+			set
+			{
+				if (errorMessage == value) return;
+				errorMessage = value;
+				OnPropertyChanged(nameof(errorMessage));
 			}
 		}
 
@@ -124,8 +141,17 @@ namespace WpfApp
 			{
 				if (Directory.Exists(selectedPath1) && Directory.Exists(selectedPath2))
 				{
+					launched = false;
 					return true;
 				}
+				else
+				{
+					ErrorMessage = "Incorrect directory path(s)";
+				}
+			}
+			else
+			{
+				ErrorMessage = launched ? string.Empty : "Both paths should be filled";
 			}
 
 			return false;
@@ -136,6 +162,26 @@ namespace WpfApp
 			PopulateCollection(_firstDirectory, Directory.GetFiles(SelectedPath1));
 
 			PopulateCollection(_secondDirectory, Directory.GetFiles(SelectedPath2));
+
+			var duplicates = _firstDirectory.Concat(_secondDirectory).GroupBy(s => s.Name).Where(g => g.Skip(1).Any()).SelectMany(g => g).ToList();
+
+			FileModel a, b;
+
+			for (int i = 0; i < duplicates.Count; i++)
+			{
+				a = duplicates[i];
+				b = duplicates[++i];
+
+				a.HasUniqueName = false;
+				b.HasUniqueName = false;
+
+				if (a.Size == b.Size)
+				{
+					a.HasUniqueSize = false;
+					b.HasUniqueSize = false;
+				}
+			}
+
 		}
 
 		private void PopulateCollection(ObservableCollection<FileModel> directory, string[] files)
